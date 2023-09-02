@@ -2,7 +2,7 @@ import { useRef, useState, useEffect, useContext } from "react";
 import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import app from "../firebase";
+import "../firebase";
 import { Link } from "react-router-dom";
 import { AuthContext } from '../context/AuthProvider';
 import '../App.css';

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from './Header'; 
 import BlogList from './Bloglist';
 import LoginRegister from './LoginRegister';
+import AddBlog from './AddBlog';
 
 const Home = () => {
   const { auth } = useContext(AuthContext);
@@ -27,6 +28,7 @@ const Home = () => {
           <Header />
           <button onClick={handleLogout}>Logout</button>
           <BlogList />
+          <AddBlog />
         </div>
       ) : (
         <LoginRegister />

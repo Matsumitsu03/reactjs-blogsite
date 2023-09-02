@@ -1,31 +1,102 @@
-import React from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import { getDocs, collection, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { firestore } from '../firebase'; 
+import { AuthContext } from '../context/AuthProvider'; 
 
-const BlogList = () => {
-  const blogs = [
-    { id: 1, title: 'Blog 1', content: 'This is the content of Blog 1.' },
-    { id: 2, title: 'Blog 2', content: 'This is the content of Blog 2.' },
-    { id: 3, title: 'Blog 3', content: 'This is the content of Blog 3.' },
-    { id: 4, title: 'Blog 4', content: 'This is the content of Blog 4.' },
-    { id: 5, title: 'Blog 5', content: 'This is the content of Blog 5.' },
-    { id: 6, title: 'Blog 6', content: 'This is the content of Blog 6.' },
-    { id: 7, title: 'Blog 7', content: 'This is the content of Blog 7.' },
-    { id: 8, title: 'Blog 8', content: 'This is the content of Blog 8.' },
-    { id: 9, title: 'Blog 9', content: 'This is the content of Blog 9.' },
-  ];
+function BlogList() {
+  const [blogs, setBlogs] = useState([]);
+  const [editingBlogId, setEditingBlogId] = useState(null); 
+  const [editedTitle, setEditedTitle] = useState(''); 
+  const [editedContent, setEditedContent] = useState(''); 
+  const { auth } = useContext(AuthContext); 
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const blogCollection = collection(firestore, 'blogs'); 
+      const blogSnapshot = await getDocs(blogCollection);
+      const blogData = blogSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setBlogs(blogData);
+    };
+
+    fetchData();
+  }, []);
+
+  const handleDelete = async (blogId) => {
+    const blogRef = doc(firestore, 'blogs', blogId); 
+    try {
+      await deleteDoc(blogRef);
+      setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.id !== blogId));
+    } catch (error) {
+      console.error('Error deleting blog: ', error);
+    }
+  };
+
+  const handleEdit = async (blogId) => {
+    setEditingBlogId(blogId); 
+    const blogToEdit = blogs.find((blog) => blog.id === blogId);
+    setEditedTitle(blogToEdit.title);
+    setEditedContent(blogToEdit.content);
+  };
+
+  const handleSaveEdit = async (blogId) => {
+    const blogRef = doc(firestore, 'blogs', blogId); 
+    try {
+      await updateDoc(blogRef, {
+        title: editedTitle,
+        content: editedContent,
+      });
+      setEditingBlogId(null); 
+      setBlogs((prevBlogs) =>
+        prevBlogs.map((blog) =>
+          blog.id === blogId ? { ...blog, title: editedTitle, content: editedContent } : blog
+        )
+      );
+    } catch (error) {
+      console.error('Error updating blog: ', error);
+    }
+  };
 
   return (
-    <div className="flex justify-center items-center flex-col">
-      <h2>Blog List</h2>
-      <ul className='flex flex-wrap justify-center'>
-        {blogs.map(blog => (
-          <li className='p-6 bg-lime-600 m-2' key={blog.id}>
-            <h3>{blog.title}</h3>
-            <p>{blog.content}</p>
+    <div>
+      <h1>Blog List</h1>
+      {auth && <p>User Email: {auth.email}</p>}
+      <ul>
+        {blogs.map((blog) => (
+          <li key={blog.id}>
+            {editingBlogId === blog.id ? ( 
+              <div>
+                <input
+                  type="text"
+                  value={editedTitle}
+                  onChange={(e) => setEditedTitle(e.target.value)}
+                />
+                <textarea
+                  value={editedContent}
+                  onChange={(e) => setEditedContent(e.target.value)}
+                />
+                <button onClick={() => handleSaveEdit(blog.id)}>Save</button>
+                <button onClick={() => setEditingBlogId(null)}>Cancel</button>
+              </div>
+            ) : ( // View mode
+              <>
+                <h2>{blog.title}</h2>
+                <p>{blog.content}</p>
+                {auth && auth.email === blog.authorEmail && (
+                  <>
+                    <button onClick={() => handleEdit(blog.id)}>Edit</button>
+                    <button onClick={() => handleDelete(blog.id)}>Delete</button>
+                  </>
+                )}
+              </>
+            )}
           </li>
         ))}
       </ul>
     </div>
   );
-};
+}
 
 export default BlogList;
