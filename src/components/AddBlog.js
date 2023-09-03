@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore'; // Import serverTimestamp
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore'; 
 import { firestore } from '../firebase';
 import { AuthContext } from '../context/AuthProvider';
 
@@ -24,7 +24,7 @@ function AddBlog() {
         title: newBlog.title,
         content: newBlog.content,
         authorEmail: auth.email,
-        timestamp: serverTimestamp(), // Add the serverTimestamp
+        timestamp: serverTimestamp(), 
       });
 
       setNewBlog({ title: '', content: '' });
