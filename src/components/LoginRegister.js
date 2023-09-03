@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, } from 'firebase/auth';
-import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, setDoc, getDocs, query, where, doc } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { Link } from "react-router-dom";
 import '../App.css';
@@ -53,40 +53,61 @@ const LoginRegister = () => {
         setErrMsg('');
     }, [email, pwd, matchPwd]);
 
+    const checkUsernameAvailability = async (username) => {
+        try {
+            const userQuery = query(collection(firestore, 'users'), where('username', '==', username));
+            const userQuerySnapshot = await getDocs(userQuery);
+
+            return userQuerySnapshot.empty;
+        } catch (err) {
+            console.error('Error checking username availability:', err);
+            throw err;
+        }
+    };
+
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();
         const v1 = EMAIL_REGEX.test(email);
         const v2 = PWD_REGEX.test(pwd);
         if (!v1 || !v2) {
-            setErrMsg("Invalid Input");
-            return;
+          setErrMsg("Invalid Input");
+          return;
         }
+    
+        const isUsernameAvailable = await checkUsernameAvailability(username);
+    
+        if (!isUsernameAvailable) {
+          setErrMsg("Username is Taken");
+          return;
+        }
+      
         try {
-            const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, pwd);
-
-            const userDocRef = collection(firestore, 'users');
-            await addDoc(userDocRef, {
-                uid: userCredential.user.uid,
-                username,
-                email,
-            });
-
-            console.log(userCredential.user);
-            setSuccess(true);
-            setEmail('');
-            setPwd('');
-            setMatchPwd('');
-            setUsername('');
+          const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, pwd);
+      
+          const userDocRef = doc(firestore, 'users', userCredential.user.uid);
+      
+          await setDoc(userDocRef, {
+            uid: userCredential.user.uid,
+            username,
+            email,
+          });
+      
+          setSuccess(true);
+          setEmail('');
+          setPwd('');
+          setMatchPwd('');
+          setUsername('');
         } catch (err) {
-            const errorCode = err.code;
-            if (errorCode === 'auth/email-already-in-use') {
-                setErrMsg('Email Taken');
-            } else {
-                setErrMsg('Registration Failed');
-            }
-            errRef.current.focus();
+          const errorCode = err.code;
+          if (errorCode === 'auth/email-already-in-use') {
+            setErrMsg('Email Taken');
+          } else {
+            setErrMsg('Registration Failed');
+          }
+          errRef.current.focus(null);
         }
-    };
+      };
+      
 
     const signInWithUsernameAndPassword = async (username, password) => {
         try {
@@ -192,11 +213,11 @@ const LoginRegister = () => {
                             <br />
                             {success === 'login' ? (
                                 <p>
-                                    Go to the <Link to="/home">Main Page</Link>
+                                    Go to the <Link to="/">Main Page</Link>
                                 </p>
                             ) : (
                                 <p>
-                                    You are now registered. <Link to="/home">Sign In</Link>
+                                    You are now registered. <Link to="/">Sign In</Link>
                                 </p>
                             )}
                         </section>
