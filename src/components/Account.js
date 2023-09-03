@@ -13,15 +13,17 @@ const Account = () => {
   const firestore = getFirestore();
   const firebaseAuth = getAuth();
 
-  const [newUsername, setNewUsername] = useState("");
-  const [newEmail, setNewEmail] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [currentPasswordUsername, setCurrentPasswordUsername] = useState('');
+  const [currentPasswordEmail, setCurrentPasswordEmail] = useState('');
+  const [newUsername, setNewUsername] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [validUsername, setValidUsername] = useState(false);
   const [validEmail, setValidEmail] = useState(false);
   const [validPassword, setValidPassword] = useState(false);
-  const [errMsg, setErrMsg] = useState("");
+  const [errMsg, setErrMsg] = useState('');
   const newPasswordRef = useRef();
   const confirmPasswordRef = useRef();
 
@@ -222,9 +224,9 @@ const Account = () => {
           <input
             type="password"
             className="border p-2 w-full rounded"
-            placeholder="Password for Confirmation (Username Change)"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
+            placeholder="Password"
+            value={currentPasswordUsername}
+            onChange={(e) => setCurrentPasswordUsername(e.target.value)}
           />
         </div>
         <button
@@ -248,9 +250,9 @@ const Account = () => {
           <input
             type="password"
             className="border p-2 w-full rounded"
-            placeholder="Password for Confirmation (Email Change)"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
+            placeholder="Password"
+            value={currentPasswordEmail}
+            onChange={(e) => setCurrentPasswordEmail(e.target.value)}
           />
         </div>
         <button
@@ -265,7 +267,7 @@ const Account = () => {
           <input
             type="password"
             className="border p-2 w-full rounded"
-            placeholder="Current Password (Password Change)"
+            placeholder="Current Password"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
           />
