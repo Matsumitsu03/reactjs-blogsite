@@ -3,6 +3,7 @@ import { updateEmail, updatePassword, updateProfile, reauthenticateWithCredentia
 import { getFirestore, doc, updateDoc, query, where, getDocs, collection } from "firebase/firestore";
 import { AuthContext } from "../context/AuthProvider";
 import { getAuth } from "firebase/auth";
+import Header from "./Header";
 
 const EMAIL_REGEX = /^[A-Za-z0-9+_.-]+@(.+)$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,24}$/;
@@ -202,6 +203,8 @@ const Account = () => {
   };  
 
   return (
+    <div>
+        <Header/>
     <div className="flex justify-center items-center min-h-screen">
       <div className="bg-white p-4 rounded-lg shadow-lg">
         <h2 className="text-2xl font-semibold mb-4">Account Settings</h2>
@@ -296,6 +299,7 @@ const Account = () => {
         </button>
         <p className="text-red-500 mt-2">{errMsg}</p>
       </div>
+    </div>
     </div>
   );
 };
