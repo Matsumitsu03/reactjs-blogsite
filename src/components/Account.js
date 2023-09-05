@@ -3,13 +3,14 @@ import { updateEmail, updatePassword, updateProfile, reauthenticateWithCredentia
 import { getFirestore, doc, updateDoc, query, where, getDocs, collection } from "firebase/firestore";
 import { AuthContext } from "../context/AuthProvider";
 import { getAuth } from "firebase/auth";
+import LoginRegister from './LoginRegister';
 import Header from "./Header";
 
 const EMAIL_REGEX = /^[A-Za-z0-9+_.-]+@(.+)$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,24}$/;
 
 const Account = () => {
-  const { currentUser } = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
   const firestore = getFirestore();
   const firebaseAuth = getAuth();
 
@@ -28,11 +29,11 @@ const Account = () => {
   const confirmPasswordRef = useRef();
 
   useEffect(() => {
-    if (currentUser) {
-      setNewUsername(currentUser.displayName || "");
-      setNewEmail(currentUser.email || "");
+    if (auth) {
+      setNewUsername(auth.displayName || "");
+      setNewEmail(auth.email || "");
     }
-  }, [currentUser]);
+  }, [auth]);
 
   useEffect(() => {
     setValidUsername(newUsername.length >= 6); 
@@ -206,6 +207,8 @@ const Account = () => {
 
   return (
     <div>
+    {auth ? (
+    <div>
         <Header/>
     <div className="flex justify-center items-center min-h-screen">
       <div className="bg-white p-4 rounded-lg shadow-lg">
@@ -303,6 +306,10 @@ const Account = () => {
       </div>
     </div>
     </div>
+          ) : (
+            <LoginRegister />
+          )}
+        </div>
   );
 };
 
