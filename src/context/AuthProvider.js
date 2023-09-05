@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [firebaseAuth]);
 
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>

@@ -62,7 +62,7 @@ function BlogList() {
   return (
     <div className='flex bg-slate-300 flex-col justify-center items-center'>
       <h1 className='text-xl'>Blog List</h1>
-      <ul className='flex flex-wrap m-2'>
+      <ul className='flex flex-col'>
         {blogs.map((blog) => (
           <li key={blog.id}>
             {editingBlogId === blog.id ? ( 
@@ -81,7 +81,7 @@ function BlogList() {
               </div>
             ) : ( // View mode
               <> 
-                <div className='flex flex-col justify-center bg-blue-300 m-3 p-2'>
+                <div className='flex flex-col justify-center bg-blue-300 m-2 p-2 rounded-md'>
                   <p className='text-gray-600'>@{blog.authorEmail}</p> 
                   <h2>{blog.title}</h2>
                   <p>{blog.content}</p>
