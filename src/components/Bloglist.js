@@ -1,31 +1,51 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { getDocs, collection, doc, deleteDoc, updateDoc } from 'firebase/firestore';
-import { firestore } from '../firebase'; 
-import { AuthContext } from '../context/AuthProvider'; 
+import { collection, doc, deleteDoc, updateDoc, query, onSnapshot, where, getDocs } from 'firebase/firestore';
+import { firestore } from '../firebase';
+import { AuthContext } from '../context/AuthProvider';
+import Comments from './Comments';
+import DropDown from './DropDown';
 
 function BlogList() {
   const [blogs, setBlogs] = useState([]);
-  const [editingBlogId, setEditingBlogId] = useState(null); 
-  const [editedTitle, setEditedTitle] = useState(''); 
-  const [editedContent, setEditedContent] = useState(''); 
-  const { auth } = useContext(AuthContext); 
+  const [editingBlogId, setEditingBlogId] = useState(null);
+  const [editedTitle, setEditedTitle] = useState('');
+  const [editedContent, setEditedContent] = useState('');
+  const { auth } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchData = async () => {
-      const blogCollection = collection(firestore, 'blogs'); 
-      const blogSnapshot = await getDocs(blogCollection);
-      const blogData = blogSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setBlogs(blogData);
+      const blogCollection = collection(firestore, 'blogs');
+      const q = query(blogCollection);
+
+      const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+        const updatedBlogs = [];
+
+        for (const docRef of querySnapshot.docs) {
+          const blog = docRef.data();
+          blog.id = docRef.id;
+
+          const userQuery = query(collection(firestore, 'users'), where('email', '==', blog.authorEmail));
+          const userQuerySnapshot = await getDocs(userQuery);
+
+          if (!userQuerySnapshot.empty) {
+            const userData = userQuerySnapshot.docs[0].data();
+            blog.username = userData.username;
+          }
+
+          updatedBlogs.push(blog);
+        }
+
+        setBlogs(updatedBlogs);
+      });
+
+      return unsubscribe;
     };
 
     fetchData();
   }, []);
 
   const handleDelete = async (blogId) => {
-    const blogRef = doc(firestore, 'blogs', blogId); 
+    const blogRef = doc(firestore, 'blogs', blogId);
     try {
       await deleteDoc(blogRef);
       setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.id !== blogId));
@@ -35,20 +55,20 @@ function BlogList() {
   };
 
   const handleEdit = async (blogId) => {
-    setEditingBlogId(blogId); 
+    setEditingBlogId(blogId);
     const blogToEdit = blogs.find((blog) => blog.id === blogId);
     setEditedTitle(blogToEdit.title);
     setEditedContent(blogToEdit.content);
   };
 
   const handleSaveEdit = async (blogId) => {
-    const blogRef = doc(firestore, 'blogs', blogId); 
+    const blogRef = doc(firestore, 'blogs', blogId);
     try {
       await updateDoc(blogRef, {
         title: editedTitle,
         content: editedContent,
       });
-      setEditingBlogId(null); 
+      setEditingBlogId(null);
       setBlogs((prevBlogs) =>
         prevBlogs.map((blog) =>
           blog.id === blogId ? { ...blog, title: editedTitle, content: editedContent } : blog
@@ -59,13 +79,14 @@ function BlogList() {
     }
   };
 
+
   return (
     <div className='flex bg-slate-300 flex-col justify-center items-center'>
       <h1 className='text-xl'>Blog List</h1>
-      <ul className='flex flex-col'>
+      <ul className='flex flex-col md:w-1/2 w-11/12'>
         {blogs.map((blog) => (
           <li key={blog.id}>
-            {editingBlogId === blog.id ? ( 
+            {editingBlogId === blog.id ? (
               <div className='flex flex-col'>
                 <input
                   type="text"
@@ -80,20 +101,25 @@ function BlogList() {
                 <button onClick={() => setEditingBlogId(null)}>Cancel</button>
               </div>
             ) : ( // View mode
-              <> 
+              <>
+
                 <div className='flex flex-col justify-center bg-blue-300 m-2 p-2 rounded-md'>
-                  <p className='text-gray-600'>@{blog.authorEmail}</p> 
+                  <div className='flex flex-row justify-between'>
+                    <p className='text-gray-600'>@{blog.username}</p>
+                    {auth && auth.email === blog.authorEmail && (
+                     <DropDown
+                     handleEdit={() => handleEdit(blog.id)}
+                     handleDelete={() => handleDelete(blog.id)}
+                   />
+                    )}
+                  </div>
                   <h2>{blog.title}</h2>
                   <p>{blog.content}</p>
-                  {auth && auth.email === blog.authorEmail && (
-                    <>
-                    <div>
-                      <button onClick={() => handleEdit(blog.id)} className="bg-sky-300/100 rounded-xl p-1 px-3 my-1 hover:bg-sky-300/70 mx-1">Edit</button>
-                      <button onClick={() => handleDelete(blog.id)} className="bg-sky-300/100 rounded-xl p-1 px-3 my-1 hover:bg-sky-300/70 mx-1">Delete</button>
-                    </div>
-                    </>
+                  {blog.timestamp && (
+                    <p className='text-gray-400'> {blog.timestamp.toDate().toLocaleString()}</p>
                   )}
                 </div>
+                <Comments blogId={blog.id} user={auth} />
               </>
             )}
           </li>

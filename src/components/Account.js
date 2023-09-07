@@ -94,7 +94,7 @@ const Account = () => {
         return;
       }
 
-      const isPasswordCorrect = await checkPasswordCorrectness(currentPassword);
+      const isPasswordCorrect = await checkPasswordCorrectness(currentPasswordUsername);
 
       if (!isPasswordCorrect) {
         setErrMsg("Incorrect password for username change.");
@@ -149,7 +149,7 @@ const Account = () => {
         return;
       }
 
-      const isPasswordCorrect = await checkPasswordCorrectness(currentPassword);
+      const isPasswordCorrect = await checkPasswordCorrectness(currentPasswordEmail);
   
       if (!isPasswordCorrect) {
         setErrMsg("Incorrect password for email change.");
@@ -210,8 +210,8 @@ const Account = () => {
     {auth ? (
     <div>
         <Header/>
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="bg-white p-4 rounded-lg shadow-lg">
+    <div className="flex justify-center mt-4">
+      <div className="bg-white p-4 rounded-lg shadow-xl w-96 border-2">
         <h2 className="text-2xl font-semibold mb-4">Account Settings</h2>
 
         <div className="mb-4">

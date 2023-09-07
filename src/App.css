@@ -47,3 +47,13 @@
       1px -1px 0 black,
       -1px 1px black;
   }
+
+ul.bg-white {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+  }
+  
+  ul.dropdown-open {
+    max-height: 500px; 
+  }
