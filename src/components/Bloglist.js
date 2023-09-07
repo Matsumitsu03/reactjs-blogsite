@@ -86,18 +86,39 @@ function BlogList() {
         {blogs.map((blog) => (
           <li key={blog.id}>
             {editingBlogId === blog.id ? (
-              <div className='flex flex-col'>
+              <div className="flex flex-col justify-center bg-blue-300 m-2 p-2 rounded-md">
+                <h1 className='self-center font-bold text-lg mb-2'>Edit Mode</h1>
                 <input
                   type="text"
                   value={editedTitle}
                   onChange={(e) => setEditedTitle(e.target.value)}
+                  className="px-3 py-2 rounded-lg m-1 focus:outline-blue-500 bg-slate-300/50"
                 />
                 <textarea
                   value={editedContent}
                   onChange={(e) => setEditedContent(e.target.value)}
+                  className="px-3 py-2 rounded-lg mb-2 mx-1 focus:outline-blue-500 bg-slate-300/50"
                 />
-                <button onClick={() => handleSaveEdit(blog.id)}>Save</button>
-                <button onClick={() => setEditingBlogId(null)}>Cancel</button>
+                <div className="space-x-2 self-center mb-4">
+                  <button
+                    onClick={() => handleSaveEdit(blog.id)}
+                    className="bg-blue-400 hover:bg-blue-500 text-white font-semibold py-1 px-4 rounded-xl focus:outline-none"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setEditingBlogId(null)}
+                    className="bg-red-500 hover:bg-red-500 text-white font-semibold py-1 px-4 rounded-xl focus:outline-none"
+                  >
+                    Cancel
+                  </button>
+                </div>
+                <div>                  
+                  {blog.timestamp && (
+                    <p className='text-gray-400'>Posted at {blog.timestamp.toDate().toLocaleString()}</p>
+                  )}
+                  <Comments blogId={blog.id} user={auth} />
+                </div>
               </div>
             ) : ( // View mode
               <>
@@ -106,10 +127,10 @@ function BlogList() {
                   <div className='flex flex-row justify-between'>
                     <p className='text-gray-600'>@{blog.username}</p>
                     {auth && auth.email === blog.authorEmail && (
-                     <DropDown
-                     handleEdit={() => handleEdit(blog.id)}
-                     handleDelete={() => handleDelete(blog.id)}
-                   />
+                      <DropDown
+                        handleEdit={() => handleEdit(blog.id)}
+                        handleDelete={() => handleDelete(blog.id)}
+                      />
                     )}
                   </div>
                   <h2>{blog.title}</h2>
