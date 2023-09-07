@@ -79,10 +79,9 @@ function BlogList() {
     }
   };
 
-
   return (
     <div className='flex bg-slate-300 flex-col justify-center items-center'>
-      <h1 className='text-xl'>Blog List</h1>
+      <h1 className='text-xl font-bold m-5'>Welcome to MatsuThoughts</h1>
       <ul className='flex flex-col md:w-1/2 w-11/12'>
         {blogs.map((blog) => (
           <li key={blog.id}>
@@ -116,10 +115,10 @@ function BlogList() {
                   <h2>{blog.title}</h2>
                   <p>{blog.content}</p>
                   {blog.timestamp && (
-                    <p className='text-gray-400'> {blog.timestamp.toDate().toLocaleString()}</p>
+                    <p className='text-gray-400'>Posted at {blog.timestamp.toDate().toLocaleString()}</p>
                   )}
+                  <Comments blogId={blog.id} user={auth} />
                 </div>
-                <Comments blogId={blog.id} user={auth} />
               </>
             )}
           </li>
