@@ -17,7 +17,7 @@ const About = () => {
             <div className="flex flex-col justify-center items-center p-8 rounded-lg shadow-md sm:w-4/5 w-11/12">
               <h2 className="text-2xl font-semibold mb-4">About My Blog Website</h2>
               <p className="text-gray-700">
-                Welcome to my blog website! This platform was created to provide a space for you to share your thoughts, ideas, and stories with the world. We're dedicated to making it easy for you to connect with others, engage in meaningful discussions, and showcase your writing skills.
+                Welcome to my blog website! This platform was created to provide a space for you to share your thoughts, ideas, and stories with the world. I'm dedicated to making it easy for you to connect with others, engage in meaningful discussions, and showcase your writing skills.
               </p>
 
               <h3 className="text-xl font-semibold mt-6 mb-2">Features:</h3>
@@ -29,7 +29,7 @@ const About = () => {
               </ul>
 
               <p className="text-gray-700 mt-6">
-                We hope you enjoy using our platform to connect with others and share your ideas. If you have any questions or feedback, feel free to reach out to us. Happy blogging!
+                We hope you enjoy using my platform to connect with others and share your ideas. If you have any questions or feedback, feel free to reach out. Happy blogging!
               </p>
             </div>
           </div>
