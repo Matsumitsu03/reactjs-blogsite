@@ -90,7 +90,7 @@ function Comments({ blogId, user }) {
                 </button>
             </div>
 
-            <div className='bg-blue-200 rounded-xl p-3'>
+            <div className='bg-blue-200 rounded-xl py-3 px-1'>
                 <h3>Comments:</h3>
                 <ul className='flex flex-col'>
                     {comments.map((commentData) => (

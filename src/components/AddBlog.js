@@ -35,28 +35,36 @@ function AddBlog() {
   };
 
   return (
-    <div>
-      <h2>Add New Blog</h2>
-      {auth && <p>User Email: {auth.email}</p>}
-      <div>
-        <label>Title:</label>
-        <input
-          type="text"
-          name="title"
-          value={newBlog.title}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div>
-        <label>Content:</label>
-        <textarea
-          name="content"
-          value={newBlog.content}
-          onChange={handleInputChange}
-        />
-      </div>
-      <button onClick={handleAddBlog}>Add Blog</button>
-    </div>
+<div className="w-full max-w-md mx-auto p-4">
+  <h2 className="text-2xl font-semibold mb-4">Add New Blog</h2>
+  {auth && <p className="mb-4">User: {auth.email}</p>}
+  <div className="mb-4">
+    <label className="block text-gray-700">Title:</label>
+    <input
+      type="text"
+      name="title"
+      value={newBlog.title}
+      onChange={handleInputChange}
+      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+    />
+  </div>
+  <div className="mb-4">
+    <label className="block text-gray-700">Content:</label>
+    <textarea
+      name="content"
+      value={newBlog.content}
+      onChange={handleInputChange}
+      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+    />
+  </div>
+  <button
+    onClick={handleAddBlog}
+    className="w-full bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded focus:outline-none"
+  >
+    Add Blog
+  </button>
+</div>
+
   );
 }
 
