@@ -13,7 +13,9 @@ const Home = () => {
         <div>
           <Header />
           <BlogList />
-
+          <div className='flex w-full items-center justify-center bg-gray-400 md:h-32 h-16'>
+            <h1 className='texl-lg font-medium'>@Copyright MatsuThoughts 2023 - All Rights Reserved.</h1>
+          </div>
         </div>
       ) : (
         <LoginRegister />
