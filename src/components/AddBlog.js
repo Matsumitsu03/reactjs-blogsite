@@ -36,25 +36,25 @@ function AddBlog() {
 
   return (
 <div className="w-full max-w-md mx-auto p-4">
-  <h2 className="text-2xl font-semibold mb-4">Add New Blog</h2>
+  {/* <h2 className="text-2xl font-semibold mb-4">Add New Blog</h2> */}
   {auth && <p className="mb-4">User: {auth.email}</p>}
-  <div className="mb-4">
-    <label className="block text-gray-700">Title:</label>
+  <div className="mb-1">
     <input
       type="text"
       name="title"
       value={newBlog.title}
       onChange={handleInputChange}
       className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+      placeholder='Title'
     />
   </div>
-  <div className="mb-4">
-    <label className="block text-gray-700">Content:</label>
+  <div className="mb-1">
     <textarea
       name="content"
       value={newBlog.content}
       onChange={handleInputChange}
       className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+      placeholder='Content'
     />
   </div>
   <button

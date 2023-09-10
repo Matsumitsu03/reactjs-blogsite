@@ -4,6 +4,7 @@ import { firestore } from '../firebase';
 import { AuthContext } from '../context/AuthProvider';
 import Comments from './Comments';
 import DropDown from './DropDown';
+import AddBlog from './AddBlog';
 
 function BlogList() {
   const [blogs, setBlogs] = useState([]);
@@ -82,6 +83,9 @@ function BlogList() {
   return (
     <div className='flex bg-slate-300 flex-col justify-center items-center'>
       <h1 className='text-xl font-bold m-5'>Welcome to MatsuThoughts</h1>
+      <div>
+        <AddBlog />
+      </div>
       <ul className='flex flex-col md:w-1/2 w-11/12'>
         {blogs.map((blog) => (
           <li key={blog.id}>
@@ -133,10 +137,10 @@ function BlogList() {
                       />
                     )}
                   </div>
-                  <h2>{blog.title}</h2>
-                  <p>{blog.content}</p>
+                  <h2 className='text-xl font-semibold'>{blog.title}</h2>
+                  <p className='text-md'>{blog.content}</p>
                   {blog.timestamp && (
-                    <p className='text-gray-400'>Posted at {blog.timestamp.toDate().toLocaleString()}</p>
+                    <p className='text-gray-400 text-sm'>Posted at {blog.timestamp.toDate().toLocaleString()}</p>
                   )}
                   <Comments blogId={blog.id} user={auth} />
                 </div>
